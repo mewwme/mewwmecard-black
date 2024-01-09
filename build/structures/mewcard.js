@@ -184,17 +184,24 @@ class mewcard {
             const thumbnailCanvas = canvas.createCanvas(800, 200); // Mengubah lebar kanvas
             const thumbnailCtx = thumbnailCanvas.getContext('2d');
 
-            let thumbnailImage;
+            let thumbnailImage = null;
 
-            thumbnailImage = await canvas.loadImage(this.thumbnail, {
-                requestOptions: {
-                    headers: {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36',
+            try {
+                thumbnailImage = await canvas.loadImage(this.thumbnail, {
+                    requestOptions: {
+                        headers: {
+                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36',
+                        }
                     }
+                });
+            } catch (error) {
+                // Mengatasi kesalahan ketika gambar tidak dapat dimuat
+                console.error('MUSICARD: Thumbnail image failed to load, not supported');
+                if (!this.thumbnail) {
+                    this.setThumbnail('https://cdn.is-a.fun/mewcard/themes3/10.png');
                 }
-            }).catch(() => {
-                thumbnailImage = canvas.loadImage(`https://s6.imgcdn.dev/Opo4a.jpg`);
-            })
+                thumbnailImage = await canvas.loadImage(`https://cdn.is-a.fun/mewcard/themes3/10.png`); // Gunakan gambar default atau URL alternatif
+            }
 
             const thumbnailSize = Math.min(thumbnailImage.width, thumbnailImage.height);
             const thumbnailX = (thumbnailImage.width - thumbnailSize) / 2;
